@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily quotes</title>
+     <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="card">
+                <a href="javascript:void(0)" id="twitte"><img src="/imgs/twitter.png" alt="twitte"></a>
+                <div id="daily_quotes"></div>
+                <div>By:&nbsp;<span id="quote_author"></span></div>
+                <button id="new_quote_btn">New Quote</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const twitte = document.getElementById('twitte');
+        let daily_quotes =  document.getElementById('daily_quotes');
+        let quote_author = document.getElementById('quote_author');
+
+        const new_quote_btn = document.getElementById('new_quote_btn');
+
+        let real_api_data = "";
+        let quotes_data = "";
+
+        const twitteNow = () => {
+            let tweetPost = `https://twitter.com/intent/tweet?text=${quotes_data.text}`;
+            window.open(tweetPost);
+        }
+
+        const getNew_quote = () => {
+            let rnum = Math.floor(Math.random()*10);
+            quotes_data = real_api_data[rnum];
+            // console.log(quotes_data.text);
+            // console.log(quotes_data.author);
+            daily_quotes.innerHTML = `${quotes_data.text}`;
+
+            quotes_data.author == null 
+            ? (quote_author.innerText = "unKnown")
+            : (quote_author.innerText = `${quotes_data.author}`);
+        }
+
+        const get_quotes = async () => {
+            const quote_api = "https://type.fit/api/quotes";
+            try{
+                let data_api = await fetch(quote_api);
+                real_api_data = await data_api.json();
+                
+                getNew_quote();
+            }catch (error) {}
+        };
+
+        twitte.addEventListener('click', twitteNow);
+        new_quote_btn.addEventListener('click', getNew_quote);
+        get_quotes();
+    </script>
+</body>
+</html>
